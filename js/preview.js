@@ -7,6 +7,7 @@
   var commentsList = bigPicture.querySelector('.social__comments');
   var pictureCloseButton = bigPicture.querySelector('#picture-cancel');
 
+  var commentCount; // Кол-во отрисованных комментариев
   var maxCommentCount; // Макс кол-во отбражаемых комментариев
   var commentLoader = bigPicture.querySelector('.comments-loader');
 
@@ -14,6 +15,7 @@
 
   window.pictureClickHandler = function (data) {
     picture = data;
+    commentCount = 0;
     maxCommentCount = 5;
     bigPicture.classList.remove('hidden');
     bigPictureImg.src = picture.url;
@@ -27,10 +29,10 @@
   };
 
   var showComments = function (comments) {
-    removeAllComments();
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < comments.length; i++) {
+    for (var i = commentCount; i < comments.length; i++) {
       if (i === maxCommentCount) {
+        commentCount += 5;
         maxCommentCount += 5;
         break;
       }
@@ -72,7 +74,7 @@
   var closePicture = function () {
     bigPicture.classList.add('hidden');
     commentLoader.classList.remove('hidden');
-
+    removeAllComments();
     pictureCloseButton.removeEventListener('click', closePicture);
     window.removeEventListener('keydown', onEscPress);
   };
