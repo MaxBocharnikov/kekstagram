@@ -153,7 +153,7 @@
           </div>
 
           <!-- Комментарии к изображению -->
-          <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
+          <div class="social__comment-count"><span class="comments-count">5</span> из <span class="comments-count--all">125</span> комментариев</div>
           <ul class="social__comments">
             <li class="social__comment">
               <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
@@ -208,6 +208,19 @@
     </a>
   </template>
 
+  <!-- Сообщение с ошибкой загрузки изображений -->
+  <template id="error-picture">
+    <section class="error">
+      <div class="error__inner">
+        <h2 class="error__title">Ошибка загрузки файла</h2>
+        <div class="error__buttons">
+          <button type="button" class="error__button">Попробовать снова</button>
+        </div>
+      </div>
+    </section>
+  </template>
+
+
   <!-- Сообщение с ошибкой загрузки изображения -->
   <template id="error">
     <section class="error">
@@ -236,5 +249,16 @@
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
 
+  <template id="socialComment">
+    <li class="social__comment">
+      <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
+      <p class="social__text">Мега фото! Просто обалдеть. Как вам так удалось?</p>
+    </li>
+  </template>
+  <script src="js/utilities.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/picture.js"></script>
+  <script src="js/gallery.js"></script>
 </body>
 </html>
