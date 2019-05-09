@@ -29,8 +29,19 @@
     'heat'
   ];
 
+  var scaleSmaller = uploadOverlay.querySelector('.scale__control--smaller');
+  var scaleBigger = uploadOverlay.querySelector('.scale__control--bigger');
+  var scaleValue = uploadOverlay.querySelector('.scale__control--value');
+
+  // мапа по размерам
+  var scaleMap = {
+    min: 0,
+    max: 100,
+    step: 25
+  };
+
   var openPreview = function () {
-    uploadOverlay.classList.remove('hidden')
+    uploadOverlay.classList.remove('hidden');
     uploadCancel.addEventListener('click', closePreview);
     window.addEventListener('keydown', onEscPress);
   };
@@ -63,6 +74,7 @@
       uploadPreview.classList.add(effectClass);
       currentEffectName = effectName;
       setEffectValue();
+      checkFilterExistence();
     });
   };
 
@@ -127,5 +139,43 @@
 
 
   effectPin.addEventListener('mousedown', mouseDownHandler);
+
+
+  // Уменьшить размер
+  var reduceScale = function () {
+    if (scaleValue.value !== '0%') {
+      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) - scaleMap.step + '%');
+    }
+  };
+  // Увеличить размер
+  var increaseScale = function () {
+    if (scaleValue.value !== '100%') {
+      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) + scaleMap.step + '%');
+    }
+  };
+  // Изменить размер превью
+  var changePreviewSize = function () {
+    uploadPreview.style.transform = 'scale(' + parseInt(scaleValue.value, 10) / 100 + ')';
+  };
+  scaleSmaller.addEventListener('click', function () {
+    reduceScale();
+    changePreviewSize();
+  });
+
+  scaleBigger.addEventListener('click', function () {
+    increaseScale();
+    changePreviewSize();
+  });
+
+  // Проверка, выбран ли фильтр; Если нет - скрываем ползунок насыщенности
+  var checkFilterExistence = function () {
+    if (uploadPreview.classList.contains('effects__preview--none')) {
+      effectLevel.classList.add('hidden');
+    } else {
+      if (effectLevel.classList.contains('hidden')) {
+        effectLevel.classList.remove('hidden');
+      }
+    }
+  };
 
 })();
