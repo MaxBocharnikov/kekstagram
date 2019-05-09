@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  // Отрисовывает картинку
   var renderPicture = function (item) {
     var template = document.querySelector('#picture');
 
@@ -19,6 +20,7 @@
     return picture;
   };
 
+  // отрисовыет картинку
   window.renderPictures = function (data) {
     var fragment = document.createDocumentFragment();
     data.forEach(function (item) {

@@ -19,6 +19,7 @@
   var currentEffectName; // текущее имя эффекта
   var PIN_MAX_DEEP = 453; // максимальная значение пина в пикселях
 
+  //  мапа по фильтрам
   var effectNames = [
     'none',
     'chrome',
@@ -29,16 +30,21 @@
   ];
 
   var openPreview = function () {
-    uploadOverlay.classList.remove('hidden');
+    uploadOverlay.classList.remove('hidden')
+    uploadCancel.addEventListener('click', closePreview);
+    window.addEventListener('keydown', onEscPress);
   };
 
   var closePreview = function () {
     uploadOverlay.classList.add('hidden');
+    window.removeEventListener('keydown', onEscPress);
+    uploadCancel.removeEventListener('click', closePreview);
+    uploadFile.value = null;
   };
 
   var setEffectValue = function () {
-    var effectPinLeft = (effectPin.offsetLeft / PIN_MAX_DEEP).toFixed(2);
-    var effectValues = {
+    var effectPinLeft = (effectPin.offsetLeft / PIN_MAX_DEEP).toFixed(2); // переводит значение в проценты (от 0 до 1 )
+    var effectValues = { // мапа по значениям, относительно от фильтра
       'none': '',
       'chrome': 'grayscale(' + effectPinLeft + ')',
       'sepia': 'sepia(' + effectPinLeft + ')',
@@ -49,6 +55,7 @@
     uploadPreview.style.filter = effectValues[currentEffectName];
   };
 
+  // На нажатие по одному из фильтров
   var effectItemClickHandler = function (item, effectName) {
     item.addEventListener('click', function () {
       uploadPreview.className = 'img-upload__preview';
@@ -77,20 +84,20 @@
     }
   };
 
-  uploadFile.addEventListener('change', function () {
-    openPreview();
-  });
+  var onEscPress = function (e) {
+    if (window.isEscClicked(e.keyCode)) {
+      closePreview();
+    }
+  };
 
-  uploadCancel.addEventListener('click', function () {
-    closePreview();
-  });
+  uploadFile.addEventListener('change', openPreview);
 
 
   submitButton.addEventListener('click', function () {
     validateForm();
   });
 
-
+  // Перетаскивание фильтра
   var mouseDownHandler = function (downEvt) {
     var startX = downEvt.clientX;
     var mouseMoveHandler = function (moveEvt) {
@@ -98,7 +105,7 @@
       startX = moveEvt.clientX;
       effectPin.style.left = effectPin.offsetLeft + shifted + 'px';
       effectLevelDepth.style.width = effectPin.style.left;
-      if (parseInt(effectPin.style.left , 10) > PIN_MAX_DEEP) {
+      if (parseInt(effectPin.style.left, 10) > PIN_MAX_DEEP) {
         effectPin.style.left = PIN_MAX_DEEP + 'px';
       }
 
