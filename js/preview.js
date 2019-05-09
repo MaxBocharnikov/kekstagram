@@ -13,6 +13,7 @@
 
   var picture;
 
+  // При нажатии на мал. картинки, открываем ее подробную карточку
   window.pictureClickHandler = function (data) {
     picture = data;
     commentCount = 0;
@@ -27,7 +28,7 @@
     pictureCloseButton.addEventListener('click', closePicture);
     window.addEventListener('keydown', onEscPress);
   };
-
+  // Отрисовываем комментарии
   var showComments = function (comments) {
     var fragment = document.createDocumentFragment();
     for (var i = commentCount; i < comments.length; i++) {
@@ -44,7 +45,7 @@
       commentLoader.classList.add('hidden');
     }
   };
-
+  // Отрисовываем один комментарий
   var renderComment = function (comment) {
     var template = document.querySelector('#socialComment');
     var socialComment = template.content.querySelector('.social__comment').cloneNode(true);
