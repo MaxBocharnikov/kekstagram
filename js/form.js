@@ -3,7 +3,7 @@
   var uploadFile = document.querySelector('#upload-file');
   var uploadOverlay = document.querySelector('.img-upload__overlay');
 
-  var uploadForm = document.querySelector('.img-upload__form');
+  // var uploadForm = document.querySelector('.img-upload__form');
   var hashtagsField = uploadOverlay.querySelector('.text__hashtags');
   var submitButton = uploadOverlay.querySelector('#upload-submit');
 
@@ -12,8 +12,7 @@
   var uploadCancel = uploadOverlay.querySelector('.img-upload__cancel');
 
   var effectLevel = document.querySelector('.effect-level');
-  var effectLevelDepth = document.querySelector('.effect-level__depth')
-  var effectLevelLine = document.querySelector('.effect-level__line');
+  var effectLevelDepth = document.querySelector('.effect-level__depth');
   var effectPin = document.querySelector('.effect-level__pin');
 
   var currentEffectName; // текущее имя эффекта
@@ -38,6 +37,24 @@
     min: 0,
     max: 100,
     step: 25
+  };
+
+  var changePreview = function () {
+    var FILE_FORMATS = ['jpeg', 'jpg', 'gif', 'svg', 'png'];
+    var file = uploadFile.files[0];
+    var fileName = file.name.toLowerCase();
+    var isAvaliable = FILE_FORMATS.some(function (format) {
+      return fileName.endsWith(format);
+    });
+    if (isAvaliable) {
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        var preview = uploadPreview.querySelector('img');
+        preview.src = reader.result;
+        preview.style.width = '100%';
+      });
+      reader.readAsDataURL(file);
+    }
   };
 
   var openPreview = function () {
@@ -102,7 +119,10 @@
     }
   };
 
-  uploadFile.addEventListener('change', openPreview);
+  uploadFile.addEventListener('change', function () {
+    changePreview();
+    openPreview();
+  });
 
 
   submitButton.addEventListener('click', function () {
@@ -121,7 +141,7 @@
         effectPin.style.left = PIN_MAX_DEEP + 'px';
       }
 
-      if (parseInt(effectPin.style.left , 10) < 0) {
+      if (parseInt(effectPin.style.left, 10) < 0) {
         effectPin.style.left = 0 + 'px';
       }
       setEffectValue();
@@ -130,7 +150,7 @@
     var mouseUpHandler = function () {
       effectLevel.removeEventListener('mousemove', mouseMoveHandler);
       effectLevel.removeEventListener('mouseup', mouseUpHandler);
-    }
+    };
 
 
     effectLevel.addEventListener('mousemove', mouseMoveHandler);
