@@ -25,4 +25,20 @@
 
     xhr.send();
   };
+
+  window.send = function (data, onSuccess, onError) {
+    var xhr = new XMLHttpRequest();
+    var url = 'https://js.dump.academy/kekstagram';
+
+    xhr.open('POST', url);
+    xhr.addEventListener('load', function () {
+      if (xhr.status !== 200) {
+        onError('Что то пошло не так');
+      } else {
+        onSuccess('Данные успешно отправлены')
+      }
+    });
+    xhr.send(data);
+  };
+
 })();

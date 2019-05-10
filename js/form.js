@@ -3,7 +3,7 @@
   var uploadFile = document.querySelector('#upload-file');
   var uploadOverlay = document.querySelector('.img-upload__overlay');
 
-  // var uploadForm = document.querySelector('.img-upload__form');
+  var uploadForm = document.querySelector('.img-upload__form');
   var hashtagsField = uploadOverlay.querySelector('.text__hashtags');
   var submitButton = uploadOverlay.querySelector('#upload-submit');
 
@@ -12,6 +12,7 @@
   var uploadCancel = uploadOverlay.querySelector('.img-upload__cancel');
 
   var effectLevel = document.querySelector('.effect-level');
+  var effectLevelValue = document.querySelector('.effect-level__value');
   var effectLevelDepth = document.querySelector('.effect-level__depth');
   var effectPin = document.querySelector('.effect-level__pin');
 
@@ -72,6 +73,7 @@
 
   var setEffectValue = function () {
     var effectPinLeft = (effectPin.offsetLeft / PIN_MAX_DEEP).toFixed(2); // переводит значение в проценты (от 0 до 1 )
+    effectLevelValue.setAttribute('value', effectPinLeft * 100);
     var effectValues = { // мапа по значениям, относительно от фильтра
       'none': '',
       'chrome': 'grayscale(' + effectPinLeft + ')',
@@ -113,21 +115,50 @@
     }
   };
 
+  // Проверка, выбран ли фильтр; Если нет - скрываем ползунок насыщенности
+  var checkFilterExistence = function () {
+    if (uploadPreview.classList.contains('effects__preview--none')) {
+      effectLevel.classList.add('hidden');
+    } else {
+      if (effectLevel.classList.contains('hidden')) {
+        effectLevel.classList.remove('hidden');
+      }
+    }
+  };
+
   var onEscPress = function (e) {
     if (window.isEscClicked(e.keyCode)) {
       closePreview();
     }
   };
 
-  uploadFile.addEventListener('change', function () {
-    changePreview();
-    openPreview();
-  });
+  // Уменьшить размер
+  var reduceScale = function () {
+    if (scaleValue.value !== '0%') {
+      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) - scaleMap.step + '%');
+    }
+  };
+  // Увеличить размер
+  var increaseScale = function () {
+    if (scaleValue.value !== '100%') {
+      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) + scaleMap.step + '%');
+    }
+  };
+  // Изменить размер превью
+  var changePreviewSize = function () {
+    uploadPreview.style.transform = 'scale(' + parseInt(scaleValue.value, 10) / 100 + ')';
+  };
 
+  // коллбэк на успешную отправку формы
+  var onSuccess = function (message) {
+    console.log(message);
+  };
 
-  submitButton.addEventListener('click', function () {
-    validateForm();
-  });
+  // коллбэк на неуспешную отправку формы
+  var onError = function (message) {
+    console.log(message);
+  };
+
 
   // Перетаскивание фильтра
   var mouseDownHandler = function (downEvt) {
@@ -147,11 +178,11 @@
       setEffectValue();
     };
 
+
     var mouseUpHandler = function () {
       effectLevel.removeEventListener('mousemove', mouseMoveHandler);
       effectLevel.removeEventListener('mouseup', mouseUpHandler);
     };
-
 
     effectLevel.addEventListener('mousemove', mouseMoveHandler);
     effectLevel.addEventListener('mouseup', mouseUpHandler);
@@ -159,24 +190,6 @@
 
 
   effectPin.addEventListener('mousedown', mouseDownHandler);
-
-
-  // Уменьшить размер
-  var reduceScale = function () {
-    if (scaleValue.value !== '0%') {
-      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) - scaleMap.step + '%');
-    }
-  };
-  // Увеличить размер
-  var increaseScale = function () {
-    if (scaleValue.value !== '100%') {
-      scaleValue.setAttribute('value', parseInt(scaleValue.value, 10) + scaleMap.step + '%');
-    }
-  };
-  // Изменить размер превью
-  var changePreviewSize = function () {
-    uploadPreview.style.transform = 'scale(' + parseInt(scaleValue.value, 10) / 100 + ')';
-  };
   scaleSmaller.addEventListener('click', function () {
     reduceScale();
     changePreviewSize();
@@ -187,15 +200,23 @@
     changePreviewSize();
   });
 
-  // Проверка, выбран ли фильтр; Если нет - скрываем ползунок насыщенности
-  var checkFilterExistence = function () {
-    if (uploadPreview.classList.contains('effects__preview--none')) {
-      effectLevel.classList.add('hidden');
-    } else {
-      if (effectLevel.classList.contains('hidden')) {
-        effectLevel.classList.remove('hidden');
-      }
-    }
-  };
+  uploadFile.addEventListener('change', function () {
+    changePreview();
+    openPreview();
+  });
 
+  // Валидация формы
+  submitButton.addEventListener('click', function () {
+    validateForm();
+  });
+
+  // на отправку формы
+  uploadForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var inputs = uploadForm.querySelectorAll('input');
+    inputs.forEach(function (t) {
+      console.log(t);
+    })
+   window.send(new FormData(uploadForm), onSuccess, onError);
+  });
 })();
