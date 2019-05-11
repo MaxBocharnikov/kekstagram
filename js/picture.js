@@ -29,4 +29,12 @@
     window.pictures.appendChild(fragment);
   };
 
+  // Функция удаляет картинки
+  window.removeAllPictures = function () {
+    var pictures = document.querySelectorAll('.picture');
+    pictures.forEach(function (picture) {
+      picture.remove();
+    });
+  };
+
 })();
