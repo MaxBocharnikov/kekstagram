@@ -177,13 +177,22 @@
   };
 
   // коллбэк на успешную отправку формы
-  var onSuccess = function (message) {
-    console.log(message);
+  var onSuccess = function () {
+    closePreview();
   };
 
   // коллбэк на неуспешную отправку формы
   var onError = function (message) {
-    console.log(message);
+    var template = document.querySelector('#error-picture');
+    var error = template.content.querySelector('.error').cloneNode(true);
+    var errorTitle = error.querySelector('.error__title');
+    var errorButton = error.querySelector('.error__button');
+    errorTitle.textContent = message;
+    errorButton.addEventListener('click', function () {
+      error.remove();
+      window.send(new FormData(uploadForm), onSuccess, onError);
+    });
+    uploadOverlay.appendChild(error);
   };
 
 
@@ -210,9 +219,9 @@
       effectLevel.removeEventListener('mousemove', mouseMoveHandler);
       effectLevel.removeEventListener('mouseup', mouseUpHandler);
     };
-
     effectLevel.addEventListener('mousemove', mouseMoveHandler);
     effectLevel.addEventListener('mouseup', mouseUpHandler);
+    uploadPreview.addEventListener('mouseout', mouseUpHandler);
   };
 
 
@@ -240,10 +249,6 @@
   // на отправку формы
   uploadForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var inputs = uploadForm.querySelectorAll('input');
-    inputs.forEach(function (t) {
-      console.log(t);
-    })
-   window.send(new FormData(uploadForm), onSuccess, onError);
+    window.send(new FormData(uploadForm), onSuccess, onError);
   });
 })();
