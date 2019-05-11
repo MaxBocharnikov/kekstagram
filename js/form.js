@@ -178,11 +178,13 @@
 
   // коллбэк на успешную отправку формы
   var onSuccess = function () {
+    window.hideLoader();
     closePreview();
   };
 
   // коллбэк на неуспешную отправку формы
   var onError = function (message) {
+    window.hideLoader();
     var template = document.querySelector('#error-picture');
     var error = template.content.querySelector('.error').cloneNode(true);
     var errorTitle = error.querySelector('.error__title');

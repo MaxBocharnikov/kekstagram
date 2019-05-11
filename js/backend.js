@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+
   window.load = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     var url = 'https://js.dump.academy/kekstagram/data';
@@ -22,8 +23,8 @@
     xhr.addEventListener('timeout', function () {
       onError('Превышен лимит ожидания.');
     });
-
     xhr.send();
+    window.showLoader();
   };
 
   window.send = function (data, onSuccess, onError) {
@@ -48,6 +49,7 @@
     });
 
     xhr.send(data);
+    window.showLoader();
   };
 
 })();

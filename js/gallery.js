@@ -3,10 +3,12 @@
   window.pictures = document.querySelector('.pictures');
   // все хорошо
   var onDataLoad = function (data) {
+    window.hideLoader();
     window.renderPictures(data);
   };
   // ошибка
   var onError = function (errorMessage) {
+    window.hideLoader();
     var template = document.querySelector('#error-picture');
     var error = template.content.querySelector('.error').cloneNode(true);
     var errorTitle = error.querySelector('.error__title');
@@ -20,5 +22,4 @@
   };
   // загружаем данные из сервера
   window.load(onDataLoad, onError);
-
 })();
