@@ -68,12 +68,11 @@
     uploadOverlay.classList.add('hidden');
     window.removeEventListener('keydown', onEscPress);
     uploadCancel.removeEventListener('click', closePreview);
+    setDefaultEffect();
     uploadFile.value = null;
   };
 
-  var setEffectValue = function () {
-    var effectPinLeft = (effectPin.offsetLeft / PIN_MAX_DEEP).toFixed(2); // переводит значение в проценты (от 0 до 1 )
-    effectLevelValue.setAttribute('value', effectPinLeft * 100);
+  var setFilter = function (effectPinLeft) {
     var effectValues = { // мапа по значениям, относительно от фильтра
       'none': '',
       'chrome': 'grayscale(' + effectPinLeft + ')',
@@ -83,6 +82,20 @@
       'heat': 'brightness(' + effectPinLeft * 3 + ')'
     };
     uploadPreview.style.filter = effectValues[currentEffectName];
+  }
+
+  var setDefaultEffect = function () {
+    effectPin.style.left = '20px';
+    effectLevelDepth.style.width = effectPin.style.left;
+    effectLevelValue.setAttribute('value', 20);
+    var effectPinLeft = 0.2;
+    setFilter(effectPinLeft);
+  };
+
+  var setEffectValue = function () {
+    var effectPinLeft = (effectPin.offsetLeft / PIN_MAX_DEEP).toFixed(2); // переводит значение в проценты (от 0 до 1 )
+    effectLevelValue.setAttribute('value', effectPinLeft * 100);
+    setFilter(effectPinLeft);
   };
 
   // На нажатие по одному из фильтров
@@ -92,7 +105,7 @@
       var effectClass = 'effects__preview--' + effectName;
       uploadPreview.classList.add(effectClass);
       currentEffectName = effectName;
-      setEffectValue();
+      setDefaultEffect();
       checkFilterExistence();
     });
   };
@@ -105,14 +118,28 @@
     var maxHashLength = 20;
     var hashStr = hashtagsField.value;
     var hashArr = hashStr.split(' ');
-    var isValid = hashArr.every(function (hash) {
-      return hash.length < maxHashLength;
+    var isLengthValid = hashArr.every(function (hash) {
+      return (hash.length < maxHashLength);
     });
-    if (!isValid) {
-      hashtagsField.setCustomValidity('Длина хештэга не должна превышать 20 символов');
-    } else {
-      hashtagsField.setCustomValidity('');
+    var isBeginValid = hashArr.every(function (hash) {
+      return hash[0] === '#';
+    });
+
+    var isUnique = hashArr.every(function (hash, index) {
+      return hash !== hashArr[index + 1];
+    });
+    if (hashStr !== '') {
+      if (!isLengthValid) {
+        hashtagsField.setCustomValidity('Длина хэштэга не должна превышать 20 символов');
+      } else if (!isBeginValid) {
+        hashtagsField.setCustomValidity('Хештэг должен начинаться с "#"');
+      } else if (!isUnique) {
+        hashtagsField.setCustomValidity('Хештэги должны быть уникальны');
+      } else {
+        hashtagsField.setCustomValidity('');
+      }
     }
+
   };
 
   // Проверка, выбран ли фильтр; Если нет - скрываем ползунок насыщенности
